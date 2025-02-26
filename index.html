@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OPM Severance Pay Calculator</title>
+    <style>
+        .calculator { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; }
+        .input-group { margin: 10px 0; }
+        label { display: inline-block; width: 200px; }
+        input { width: 100px; padding: 5px; }
+        .result { margin-top: 20px; padding: 10px; background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>Federal Severance Pay Calculator</h2>
+        
+        <div class="input-group">
+            <label>Annual Basic Pay ($):</label>
+            <input type="number" id="annualPay" step="1000">
+        </div>
+        
+        <div class="input-group">
+            <label>Years of Service:</label>
+            <input type="number" id="serviceYears" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label>Months of Service (0-11):</label>
+            <input type="number" id="serviceMonths" min="0" max="11">
+        </div>
+        
+        <div class="input-group">
+            <label>Age (Years):</label>
+            <input type="number" id="ageYears" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label>Age (Months):</label>
+            <input type="number" id="ageMonths" min="0" max="11">
+        </div>
+
+        <button onclick="calculate()">Calculate</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+    function calculate() {
+        // Get input values
+        const annualPay = parseFloat(document.getElementById('annualPay').value);
+        const serviceYears = parseInt(document.getElementById('serviceYears').value);
+        const serviceMonths = parseInt(document.getElementById('serviceMonths').value);
+        const ageYears = parseInt(document.getElementById('ageYears').value);
+        const ageMonths = parseInt(document.getElementById('ageMonths').value);
+
+        // Step 2: Calculate weekly rate
+        const weeklyRate = (annualPay / 2087) * 40;
+
+        // Step 3: Calculate adjusted service years
+        let basicWeeks;
+        if(serviceYears > 10) {
+            const extraYears = serviceYears - 10;
+            basicWeeks = 10 + (extraYears * 2);
+        } else {
+            basicWeeks = serviceYears;
+        }
+        
+        // Add partial months calculation (25% per full 3 months)
+        const additionalMonths = Math.floor(serviceMonths / 3) * 0.25;
+        basicWeeks += additionalMonths;
+
+        // Step 4: Basic severance
+        const basicSeverance = weeklyRate * basicWeeks;
+
+        // Step 5: Age adjustment
+        let ageFactor = 1;
+        if(ageYears >= 40) {
+            const monthsOver40 = ((ageYears - 40) * 12) + ageMonths;
+            const threeMonthPeriods = Math.floor(monthsOver40 / 3);
+            ageFactor = 1 + (threeMonthPeriods * 0.025);
+        }
+
+        // Step 6: Adjusted severance
+        let adjustedSeverance = basicSeverance * ageFactor;
+
+        // Step 7-8: Apply 52-week cap
+        const maxSeverance = weeklyRate * 52;
+        const totalSeverance = Math.min(adjustedSeverance, maxSeverance);
+
+        // Step 9-10: Payment calculations
+        const biweeklyPayment = weeklyRate * 2;
+        const paymentWeeks = (totalSeverance / biweeklyPayment) * 2;
+
+        // Display results
+        const results = `
+            <h3>Calculation Results:</h3>
+            <p>Weekly Rate: $${weeklyRate.toFixed(2)}</p>
+            <p>Total Severance Pay: $${totalSeverance.toFixed(2)}</p>
+            <p>Biweekly Payments: $${biweeklyPayment.toFixed(2)}</p>
+            <p>Payment Duration: ${paymentWeeks.toFixed(1)} weeks</p>
+            <p><em>Note: Contact your HR office for official calculation</em></p>
+        `;
+
+        document.getElementById('result').innerHTML = results;
+    }
+    </script>
+</body>
+</html>
