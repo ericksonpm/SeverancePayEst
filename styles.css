@@ -79,3 +79,38 @@ th, td {
 th {
     background-color: var(--background-color);
 }
+
+/* Add to styles.css */
+.help-text {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.info-icon {
+    cursor: help;
+    font-size: 0.8em;
+    vertical-align: super;
+}
+
+.section-help {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.reference-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ddd;
+}
+
+.pre-calculation-note {
+    background: #fff3cd;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
