@@ -1,0 +1,17 @@
+name: Cloudflare Pages
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cloudflare Pages
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: 65YgjaxEjE8-r4HffhimaxuC7cEBQtEEssdY1dvO
+          accountId: db540b0036310230657120113edf2b93
+          projectName: SCD Calculator
+          directory: .
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
