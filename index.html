@@ -2,105 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SCD Calculator (Private)</title>
-    <style>
-        /* Basic styling */
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; }
-        .input-group { margin: 1rem 0; }
-        .reference { font-size: 0.9em; color: #666; margin-top: 2rem; }
-    </style>
+    <title>Federal SCD Calculator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>SCD Estimator</h1>
-    <div class="input-group">
-        <label>Federal Start Date: <input type="date" id="federalStart"></label>
-    </div>
-    
-    <div class="input-group">
-        <h3>Military Service</h3>
-        <div id="militaryEntries">
-            <div class="military-entry">
-                <input type="date" class="mil-start">
-                <input type="date" class="mil-end">
-                <label><input type="checkbox" class="buyback-paid"> Buyback Paid?</label>
+    <div class="container">
+        <h1>Federal Service Computation Date Calculator</h1>
+        
+        <!-- Service Input Section -->
+        <section class="input-section">
+            <h2>Service Information</h2>
+            <div class="input-group">
+                <label>Federal Entry on Duty (EOD):</label>
+                <input type="date" id="federalEod" required>
             </div>
-        </div>
-        <button onclick="addMilitaryEntry()">+ Add Another Service Period</button>
+            
+            <div class="military-section">
+                <h3>Military Service History</h3>
+                <div id="militaryEntries"></div>
+                <button class="btn-add" onclick="addMilitaryEntry()">+ Add Military Service</button>
+            </div>
+        </section>
+
+        <!-- LWOP Input Section -->
+        <section class="input-section">
+            <h3>Leave Without Pay (LWOP)</h3>
+            <div id="lwopEntries"></div>
+            <button class="btn-add" onclick="addLwopEntry()">+ Add LWOP Period</button>
+        </section>
+
+        <!-- Other Factors -->
+        <section class="input-section">
+            <h3>Other Adjustments</h3>
+            <div class="input-group">
+                <label>Breaks in Service (Days):</label>
+                <input type="number" id="breakDays" min="0" value="0">
+            </div>
+            <div class="input-group">
+                <label>Performance Rating (0-4):</label>
+                <input type="number" id="performance" min="0" max="4" value="0">
+            </div>
+        </section>
+
+        <!-- Results Display -->
+        <button class="btn-calculate" onclick="calculateAllSCDs()">Calculate SCDs</button>
+        <section id="results" class="results-section"></section>
     </div>
 
-    <button onclick="calculateSCD()">Calculate</button>
-    
-    <div id="results"></div>
-    
-    <div class="reference">
-        <h4>References</h4>
-        <ul>
-            <li><a href="https://www.opm.gov" target="_blank">OPM Guidelines</a></li>
-            <li>5 CFR 630.205 - Creditable Service</li>
-        </ul>
-        <p><em>This is a personal project. Verify results with HR.</em></p>
-    </div>
-
-    <script>
-        // Core calculation logic
-        function opmDateAdjustment(startDate, days) {
-            // OPM's 360-day year formula (30-day months)
-            let totalDays = startDate.getDate() + days;
-            let months = startDate.getMonth() + Math.floor(totalDays / 30);
-            let years = startDate.getFullYear() + Math.floor(months / 12);
-            
-            months = months % 12;
-            let daysAdjusted = totalDays % 30;
-            
-            return new Date(years, months, daysAdjusted);
-        }
-
-        function calculateSCD() {
-            // Get federal start date
-            const federalStart = new Date(document.getElementById('federalStart').value);
-            
-            // Process military service
-            let totalMilitaryDays = 0;
-            document.querySelectorAll('.military-entry').forEach(entry => {
-                const start = new Date(entry.querySelector('.mil-start').value);
-                const end = new Date(entry.querySelector('.mil-end').value);
-                const buybackPaid = entry.querySelector('.buyback-paid').checked;
-                
-                if (buybackPaid && !isNaN(start) && !isNaN(end)) {
-                    const diffTime = Math.abs(end - start);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    totalMilitaryDays += diffDays;
-                }
-            });
-
-            // Convert to OPM's 360-day years (1 year = 360 days)
-            const opmYears = Math.floor(totalMilitaryDays / 360);
-            const remainingDays = totalMilitaryDays % 360;
-            
-            // Calculate adjusted date
-            let adjustedDate = new Date(federalStart);
-            adjustedDate.setFullYear(adjustedDate.getFullYear() - opmYears);
-            adjustedDate = opmDateAdjustment(adjustedDate, -remainingDays);
-
-            // Display results
-            document.getElementById('results').innerHTML = `
-                <h3>Estimated Retirement SCD:</h3>
-                <p>${adjustedDate.toLocaleDateString()}</p>
-                <p>Based on ${opmYears} years ${remainingDays} days military credit</p>
-            `;
-        }
-
-        // Dynamic form elements
-        function addMilitaryEntry() {
-            const newEntry = document.createElement('div');
-            newEntry.className = 'military-entry';
-            newEntry.innerHTML = `
-                <input type="date" class="mil-start">
-                <input type="date" class="mil-end">
-                <label><input type="checkbox" class="buyback-paid"> Buyback Paid?</label>
-            `;
-            document.getElementById('militaryEntries').appendChild(newEntry);
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
