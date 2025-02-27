@@ -8,45 +8,99 @@
 <body>
     <div class="container">
         <h1>Federal Service Computation Date Calculator</h1>
+        <p class="disclaimer">Note: This tool provides estimates only. Actual SCDs must be verified by your HR office.</p>
         
-        <!-- Service Input Section -->
+        <!-- Federal Service Section -->
         <section class="input-section">
-            <h2>Service Information</h2>
+            <h2>Core Service Information</h2>
+            
             <div class="input-group">
                 <label>Federal Entry on Duty (EOD):</label>
-                <input type="date" id="federalEod" required>
-            </div>
-            
-            <div class="military-section">
-                <h3>Military Service History</h3>
-                <div id="militaryEntries"></div>
-                <button class="btn-add" onclick="addMilitaryEntry()">+ Add Military Service</button>
+                <div class="input-help">
+                    <input type="date" id="federalEod" required>
+                    <small class="help-text">
+                        Found in Block 5 of your first SF-50. This is your initial federal hire date.
+                    </small>
+                </div>
             </div>
         </section>
 
-        <!-- LWOP Input Section -->
+        <!-- Military Service Section -->
         <section class="input-section">
-            <h3>Leave Without Pay (LWOP)</h3>
+            <h3>Military Service History 
+                <span class="info-icon" title="Includes active duty, reserves, and National Guard">ℹ️</span>
+            </h3>
+            <div id="militaryEntries"></div>
+            <button class="btn-add" onclick="addMilitaryEntry()">+ Add Military Service</button>
+            <div class="section-help">
+                <p>Include <strong>all</strong> military service periods, even if you haven't paid the buyback. 
+                For combat zone time, check both "Buyback Paid" and "Combat Zone".</p>
+                <p>🔍 Source: DD-214(s) or retirement points statements (NGB 23/NGB 22)</p>
+            </div>
+        </section>
+
+        <!-- LWOP Section -->
+        <section class="input-section">
+            <h3>Leave Without Pay (LWOP) 
+                <span class="info-icon" title="Periods of unpaid leave exceeding 6 months per calendar year">ℹ️</span>
+            </h3>
             <div id="lwopEntries"></div>
             <button class="btn-add" onclick="addLwopEntry()">+ Add LWOP Period</button>
+            <div class="section-help">
+                <p>Only include LWOP periods that exceeded 6 months in a single calendar year.</p>
+                <p>🔍 Source: SF-50s (Block 30) or agency personnel files</p>
+            </div>
         </section>
 
-        <!-- Other Factors -->
+        <!-- Other Adjustments -->
         <section class="input-section">
             <h3>Other Adjustments</h3>
+            
             <div class="input-group">
-                <label>Breaks in Service (Days):</label>
-                <input type="number" id="breakDays" min="0" value="0">
+                <label>Breaks in Service:</label>
+                <div class="input-help">
+                    <input type="number" id="breakDays" min="0" value="0">
+                    <small class="help-text">
+                        Total days between federal jobs (excludes military service)
+                    </small>
+                </div>
             </div>
+
             <div class="input-group">
-                <label>Performance Rating (0-4):</label>
-                <input type="number" id="performance" min="0" max="4" value="0">
+                <label>Performance Rating:</label>
+                <div class="input-help">
+                    <input type="number" id="performance" min="0" max="4" value="0">
+                    <small class="help-text">
+                        0-4 scale (4 = highest) from most recent performance review (for RIF calculations)
+                    </small>
+                </div>
             </div>
         </section>
 
-        <!-- Results Display -->
+        <!-- Calculation Button -->
         <button class="btn-calculate" onclick="calculateAllSCDs()">Calculate SCDs</button>
-        <section id="results" class="results-section"></section>
+
+        <!-- Results Section -->
+        <section id="results" class="results-section">
+            <div class="pre-calculation-note">
+                <h3>Before Calculating:</h3>
+                <ul>
+                    <li>Verify dates with your Official Personnel Folder (OPF)</li>
+                    <li>Military members: Have DD-214s available</li>
+                    <li>Recent hires: Confirm EOD with onboarding documents</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer References -->
+        <footer class="reference-footer">
+            <h3>Official References</h3>
+            <ul>
+                <li><a href="https://www.opm.gov/retirement-services/publications-forms/csrsfers-handbook/c050.pdf" target="_blank">OPM SCD Computation Guide</a></li>
+                <li><a href="https://www.dfas.mil/civilianemployees/militaryservicecreditdeposits/" target="_blank">DFAS Buyback Calculator</a></li>
+                <li>5 CFR 630 (Leave) / 5 CFR 842 (FERS Retirement)</li>
+            </ul>
+        </footer>
     </div>
 
     <script src="script.js"></script>
